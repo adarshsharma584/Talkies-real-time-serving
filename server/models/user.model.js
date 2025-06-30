@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    useername: {
+    username: {
         type: String,
         required: true,
         unique: true,
@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema({
         default: 'male'
     },
     refreshToken:{
-        type:string,
+        type:String,
         default: ''
     },
 },{
