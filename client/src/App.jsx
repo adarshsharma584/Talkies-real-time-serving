@@ -3,6 +3,7 @@ import { loginUserThunk } from './redux/user/user.thunk'
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
+import HomePage from './pages/home/HomePage'
 function App() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.userReducer);
@@ -12,7 +13,10 @@ function App() {
   }, []);
 
   return (
-    <div>App</div>
+    <div>
+      <HomePage />
+     
+    </div>
   )
 }
 
