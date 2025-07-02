@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import {errorMiddleware} from "./middlewares/error.middleware.js";
 import userRouter from "./routes/user.route.js";
+import messageRouter from "./routes/message.route.js";
 
 dotenv.config({path: "./.env",
 });
@@ -23,6 +24,7 @@ app.use(errorMiddleware);
 //Routes -->
 
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/messages", messageRouter);
 
 connectDB();
 app.get("/", (req, res) => {
