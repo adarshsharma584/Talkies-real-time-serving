@@ -2,22 +2,36 @@ import React, { useState } from "react";
 import { FaCircleUser } from "react-icons/fa6";
 import { IoMdKey } from "react-icons/io";
 import {Link} from "react-router-dom";
-function Login() {
+import { useDispatch } from "react-redux";
+import {loginUserThunk} from "../../redux/user/user.thunk";
+import { useEffect } from "react";
 
-const [signupData, setSignupData] = useState({
+function Login() {
+  const dispatch = useDispatch();
+const [loginData, setLoginData] = useState({
    
     username: "",
     password: "",
     
 })
+ const handleLogin = async (loginData) => {
+  console.log("Login data:", loginData)
+ const result = await  dispatch(loginUserThunk(loginData));
+ console.log("Login result:", result.payload.user);
+ }
 
 const handleInputChange = (e) => {
-    setSignupData(prev=> ({
+    setLoginData(prev=> ({
         ...prev,
         [e.target.name]: e.target.value
     })) 
 }
-console.log(signupData);
+console.log(loginData);
+
+// useEffect(() => {
+//   handleLogin(loginData);
+// }, [dispatch]);
+
   return (
     <div className="flex flex-col gap-4 justify-center items-center h-screen bg-zinc-600">
      <div className="flex flex-col gap-4 justify-center items-center bg-zinc-800 p-8 rounded-lg shadow-lg w-96"> 
@@ -43,8 +57,8 @@ console.log(signupData);
           onChange={handleInputChange}
         />
       </label>
-      
-     <button className="btn btn-primary">Login</button>
+
+     <button className="btn btn-primary" onClick={() => handleLogin(loginData)}>Login</button>
       <p className="text-white">Don't have an account? <Link to="/signup" className="text-blue-500">Sign Up</Link></p>
      </div>
     </div>

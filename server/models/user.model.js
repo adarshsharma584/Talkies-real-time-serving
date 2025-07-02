@@ -18,12 +18,13 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        minlength: 6
+        minlength: 6,
+        select:false
     },
-    avatar: {
-        type: String,
-        default: 'https://www.gravatar.com/avatar/'
-    },
+    // avatar: {
+    //     type: String,
+    //     default: 'https://www.gravatar.com/avatar/'
+    // },
     gender:{
         type:String,
         enum: ['male', 'female', 'other'],
@@ -31,7 +32,8 @@ const userSchema = new mongoose.Schema({
     },
     refreshToken:{
         type:String,
-        default: ''
+        default: '',
+        select: false
     },
 },{
     timestamps: true,

@@ -12,9 +12,9 @@ const generateAccessAndRefreshTokens = async (user) => {
 };
 
 const register = asyncHandler(async (req, res, next) => {
- const { fullName, username, password, gender, avatar } = req.body;
+ const { fullName, username, password, gender } = req.body;
 
-  if (!fullName || !username || !password || !gender || !avatar) {
+  if (!fullName || !username || !password || !gender) {
     return next(new errorHandler("Please fill all the fields", 400));
   }
 
@@ -28,7 +28,7 @@ const register = asyncHandler(async (req, res, next) => {
     username,
     password,
     gender,
-    avatar,
+   
   });
    
   const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(newUser);
@@ -40,7 +40,7 @@ const register = asyncHandler(async (req, res, next) => {
 
   const tokenOptions = {
     httpOnly: true,
-   
+   secure:true,
     sameSite: "None",
   };
    res.cookie("refreshToken", refreshToken, tokenOptions);
@@ -79,6 +79,7 @@ const login = asyncHandler(async (req, res, next) => {
 
   const tokenOptions = {
     httpOnly: true,
+    secure:true,
     sameSite: "None",
   };
   
