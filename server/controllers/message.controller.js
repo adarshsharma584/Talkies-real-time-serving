@@ -52,8 +52,44 @@ console.log("Message:", message);
     message: "Message sent successfully",
     data: newMessage,
   });
-
-  
 });
 
-export {sendMessage};
+
+const getMessages = asyncHandler( async(req,res,next)=>{
+  const myId = req.user.id;
+  const {receiverId} = req.params;
+
+  if (!myId || !receiverId) {
+    return next(new errorHandler("Please provide both user IDs", 400));
+  };
+
+  const conversation = await Conversation.findOne({
+    participants: { $all: [myId, receiverId] }
+  }).populate("messages");
+
+ console.log("Conversation found:", conversation.messages.map(msg => msg.message));
+
+  if (!conversation) {
+    return next(new errorHandler("No conversation found", 404));
+  }
+
+  if (conversation.participants.length < 2) {
+    return next(new errorHandler("Conversation must have at least two participants", 400));
+  }
+
+  if (conversation.messages.length === 0) {
+    return res.status(200).json({
+      success: true,
+      responseData: [],
+      message: "No messages found",
+    });
+  }
+return res.status(200).json({
+    success: true,
+    responseData: conversation.messages,
+  });
+});
+
+  
+
+export {sendMessage,getMessages};
