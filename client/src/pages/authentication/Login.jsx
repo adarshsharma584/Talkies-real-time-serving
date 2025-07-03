@@ -2,12 +2,16 @@ import React, { useState } from "react";
 import { FaCircleUser } from "react-icons/fa6";
 import { IoMdKey } from "react-icons/io";
 import {Link} from "react-router-dom";
-import { useDispatch } from "react-redux";
-import {loginUserThunk} from "../../redux/user/user.thunk";
-import { useEffect } from "react";
 
+import {loginUserThunk} from "../../redux/user/user.thunk";
+
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 function Login() {
   const dispatch = useDispatch();
+  const { isAuthenticated, screenLoading } = useSelector(state => state.userReducer);
+  const navigate = useNavigate();
 const [loginData, setLoginData] = useState({
    
     username: "",
@@ -28,9 +32,12 @@ const handleInputChange = (e) => {
 }
 console.log(loginData);
 
-// useEffect(() => {
-//   handleLogin(loginData);
-// }, [dispatch]);
+useEffect(() => {
+    if (isAuthenticated) {
+      // Redirect to the home page or another page
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
 
   return (
     <div className="flex flex-col gap-4 justify-center items-center h-screen bg-zinc-600">
