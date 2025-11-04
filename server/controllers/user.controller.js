@@ -38,12 +38,14 @@ const register = asyncHandler(async (req, res, next) => {
     return next(new errorHandler("User registration failed", 500));
   }
 
+  // Use secure cookies in production only. During local development (http)
+  // secure must be false otherwise the cookie won't be set.
   const tokenOptions = {
     httpOnly: true,
-   secure:true,
-    sameSite: "None",
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
   };
-   res.cookie("refreshToken", refreshToken, tokenOptions);
+  res.cookie('refreshToken', refreshToken, tokenOptions);
  console.log(req.cookies);
   res.status(201).json({
     success: true,
@@ -79,11 +81,10 @@ const login = asyncHandler(async (req, res, next) => {
 
   const tokenOptions = {
     httpOnly: true,
-    secure:true,
-    sameSite: "None",
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
   };
-  
-  res.cookie("refreshToken", refreshToken, tokenOptions);
+  res.cookie('refreshToken', refreshToken, tokenOptions);
   
   res.status(200).json({
     success: true,
@@ -103,7 +104,12 @@ const logout = asyncHandler(async (req, res, next) => {
   user.refreshToken = "";
   await User.updateOne({ _id: user._id }, { refreshToken: "" });
 
-  res.clearCookie("refreshToken", { httpOnly: true, sameSite: "None" });
+  // Clear cookie using same options (secure/sameSite) so it is removed correctly
+  res.clearCookie('refreshToken', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+  });
   
   res.status(200).json({
     success: true,
