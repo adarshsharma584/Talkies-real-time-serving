@@ -23,11 +23,11 @@ const userSlice = createSlice({
     builder
 
       //signup User-->
-      .addCase("user/signUpUser.pending", (state, action) => {
+      .addCase(signupUserThunk.pending, (state, action) => {
         console.log("Signup pending");
         state.buttonLoading = true;
       })
-      .addCase("user/signUpUser.fulfilled", (state, action) => {
+      .addCase(signupUserThunk.fulfilled, (state, action) => {
         console.log("Signup fulfilled");
         state.buttonLoading = false;
         state.isAuthenticated = true;
@@ -35,7 +35,7 @@ const userSlice = createSlice({
         console.log("User profile:", state.userProfile);
         // navigate("/");
       })
-      .addCase("user/signUpUser.rejected", (state, action) => {
+      .addCase(signupUserThunk.rejected, (state, action) => {
         console.log("Signup rejected");
         state.buttonLoading = false;
         console.error("Error during signup:", action.payload);

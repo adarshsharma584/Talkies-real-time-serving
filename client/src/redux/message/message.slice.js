@@ -30,7 +30,9 @@ const messageSlice = createSlice({
       })
       .addCase(sendMessageThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.messages.push(action.payload.data);
+        if (action.payload?.data) {
+          state.messages.push(action.payload.data);
+        }
       })
       .addCase(sendMessageThunk.rejected, (state, action) => {
         state.loading = false;
@@ -42,7 +44,11 @@ const messageSlice = createSlice({
       })
       .addCase(getMessagesThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.messages = action.payload.responseData;
+        if (Array.isArray(action.payload?.responseData)) {
+          state.messages = action.payload.responseData;
+        } else {
+          state.messages = [];
+        }
       })
       .addCase(getMessagesThunk.rejected, (state, action) => {
         state.loading = false;

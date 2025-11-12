@@ -6,40 +6,88 @@ import { signupUserThunk } from "../../redux/user/user.thunk";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
+
 function Signup() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { isAuthenticated, screenLoading } = useSelector(
     (state) => state.userReducer
   );
-  const navigate = useNavigate();
+
   const [signupData, setSignupData] = useState({
     fullName: "",
     username: "",
     password: "",
     confirmPassword: "",
+    gender: "",
   });
 
-  const handleInputChange = (e) => {
-    setSignupData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  console.log(signupData);
-  const handleSignUp = async (signupData) => {
-    console.log("Signup data:", signupData);
-    const result = await dispatch(signupUserThunk(signupData));
-    console.log("Signup result:", result.payload.user);
-  };
+  const [error, setError] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated) {
-      // Redirect to the home page or another page
-
       navigate("/");
     }
   }, [isAuthenticated, navigate]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setSignupData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+
+    // simple validation
+    if (!signupData.fullName || !signupData.username || !signupData.password) {
+      const msg = "Please fill in all required fields.";
+      setError(msg);
+      toast.error(msg);
+      return;
+    }
+    if (signupData.password !== signupData.confirmPassword) {
+      const msg = "Passwords do not match.";
+      setError(msg);
+      toast.error(msg);
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      const result = await dispatch(
+        signupUserThunk({
+          fullName: signupData.fullName,
+          username: signupData.username,
+          password: signupData.password,
+          gender: signupData.gender,
+        })
+      ).unwrap();
+      toast.success(`Welcome, ${result?.user?.username || "user"}! Account created.`);
+      // on success, the isAuthenticated effect will navigate
+    } catch (err) {
+      // unwrap provides either payload or error; normalize to a string before rendering
+      const formatError = (e) => {
+        if (!e) return "Signup failed. Try again.";
+        if (typeof e === "string") return e;
+        if (e.error) return e.error;
+        if (e.message) return e.message;
+        try {
+          return JSON.stringify(e);
+        } catch (_) {
+          return "Signup failed. Try again.";
+        }
+      };
+
+      const msg = formatError(err);
+      setError(msg);
+      toast.error(msg);
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <div className="flex min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -54,9 +102,17 @@ function Signup() {
         </div>
 
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-          <div className="bg-white dark:bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
+          <form
+            onSubmit={handleSubmit}
+            className="bg-white dark:bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10"
+          >
             <div className="space-y-6">
-              {/* Full Name Field */}
+              {error && (
+                <div className="text-sm text-red-600 bg-red-50 p-2 rounded">
+                  {error}
+                </div>
+              )}
+
               <div>
                 <label
                   htmlFor="fullName"
@@ -72,15 +128,15 @@ function Signup() {
                     type="text"
                     name="fullName"
                     id="fullName"
+                    value={signupData.fullName}
+                    onChange={handleInputChange}
                     required
                     className="pl-10 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white sm:text-sm"
                     placeholder="Enter your full name"
-                    onChange={handleInputChange}
                   />
                 </div>
               </div>
 
-              {/* Username Field */}
               <div>
                 <label
                   htmlFor="username"
@@ -96,15 +152,15 @@ function Signup() {
                     type="text"
                     name="username"
                     id="username"
+                    value={signupData.username}
+                    onChange={handleInputChange}
                     required
                     className="pl-10 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white sm:text-sm"
                     placeholder="Choose a username"
-                    onChange={handleInputChange}
                   />
                 </div>
               </div>
 
-              {/* Password Field */}
               <div>
                 <label
                   htmlFor="password"
@@ -120,15 +176,15 @@ function Signup() {
                     type="password"
                     name="password"
                     id="password"
+                    value={signupData.password}
+                    onChange={handleInputChange}
                     required
                     className="pl-10 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white sm:text-sm"
                     placeholder="Create a password"
-                    onChange={handleInputChange}
                   />
                 </div>
               </div>
 
-              {/* Confirm Password Field */}
               <div>
                 <label
                   htmlFor="confirmPassword"
@@ -144,15 +200,15 @@ function Signup() {
                     type="password"
                     name="confirmPassword"
                     id="confirmPassword"
+                    value={signupData.confirmPassword}
+                    onChange={handleInputChange}
                     required
                     className="pl-10 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white sm:text-sm"
                     placeholder="Confirm your password"
-                    onChange={handleInputChange}
                   />
                 </div>
               </div>
 
-              {/* Gender Field */}
               <div>
                 <label
                   htmlFor="gender"
@@ -164,9 +220,10 @@ function Signup() {
                   <select
                     name="gender"
                     id="gender"
+                    value={signupData.gender}
+                    onChange={handleInputChange}
                     required
                     className="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white sm:text-sm"
-                    onChange={handleInputChange}
                   >
                     <option value="">Select gender</option>
                     <option value="male">Male</option>
@@ -176,18 +233,23 @@ function Signup() {
                 </div>
               </div>
 
-              {/* Sign Up Button */}
               <div>
                 <button
-                  onClick={() => handleSignUp(signupData)}
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+                  type="submit"
+                  disabled={submitting || screenLoading}
+                  className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 ${
+                    submitting || screenLoading
+                      ? "opacity-60 cursor-not-allowed"
+                      : ""
+                  }`}
                 >
-                  Create Account
+                  {submitting || screenLoading
+                    ? "Creating..."
+                    : "Create Account"}
                 </button>
               </div>
             </div>
 
-            {/* Login Link */}
             <div className="mt-6">
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
@@ -209,7 +271,7 @@ function Signup() {
                 </Link>
               </div>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>

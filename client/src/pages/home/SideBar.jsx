@@ -2,6 +2,7 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { FaSearch, FaSignOutAlt } from "react-icons/fa";
 import { logoutUserThunk } from "../../redux/user/user.thunk";
+import User from "./User.jsx";
 
 function SideBar() {
   const dispatch = useDispatch();
@@ -12,25 +13,25 @@ function SideBar() {
     dispatch(logoutUserThunk());
   };
 
-  const filteredUsers = otherUsers?.filter((user) =>
+  const filteredUsers = (otherUsers || []).filter((user) =>
     user.username.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
-    <div className="w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col h-screen">
+    <div className="w-80 bg-white/90 backdrop-blur-sm dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col h-screen">
       {/* Profile Section */}
       <div className="p-4 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center space-x-3">
-          <div className="h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center">
+          <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-500 flex items-center justify-center">
             <span className="text-white text-lg font-semibold">
               {userProfile?.username?.[0]?.toUpperCase()}
             </span>
           </div>
           <div>
             <h2 className="text-lg font-semibold dark:text-white">
-              {userProfile?.username}
+              {userProfile?.username || "Guest"}
             </h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Online</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Online</p>
           </div>
         </div>
       </div>
@@ -50,25 +51,13 @@ function SideBar() {
       </div>
 
       {/* Users List */}
+      <div className="px-4 text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Chats</div>
       <div className="flex-1 overflow-y-auto">
-        {filteredUsers?.map((user) => (
-          <div
-            key={user._id}
-            className="flex items-center space-x-3 p-4 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer transition-colors duration-200"
-          >
-            <div className="h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center">
-              <span className="text-white text-lg font-semibold">
-                {user.username[0].toUpperCase()}
-              </span>
-            </div>
-            <div>
-              <h3 className="font-medium dark:text-white">{user.username}</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Click to start chat
-              </p>
-            </div>
-          </div>
-        ))}
+        {filteredUsers.length > 0 ? (
+          filteredUsers.map((user) => <User key={user._id} user={user} />)
+        ) : (
+          <div className="p-6 text-center text-gray-500 dark:text-gray-400">No users found</div>
+        )}
       </div>
 
       {/* Logout Button */}

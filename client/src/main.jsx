@@ -15,9 +15,9 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      // <ProtectedRoute>
+      <ProtectedRoute>
         <Home />
-      // </ProtectedRoute>
+      </ProtectedRoute>
     ),
   },
   {
@@ -31,9 +31,7 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById("root")).render(
-  
-    <Provider store={store}>
-      <RouterProvider router={router} />
-    </Provider>
-  
+  <Provider store={store}>
+    <RouterProvider router={router} />
+  </Provider>
 );
