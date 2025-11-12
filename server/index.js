@@ -39,7 +39,7 @@ app.use("/api/v1/messages", messageRouter);
 connectDB();
 
 app.get("/", (req, res) => {
-  res.send("Hello, GupShup server is running!");
+  res.send("Hello, Chat-Bird server is running!");
 });
 
 // Error middleware should be registered after routes so it can catch errors

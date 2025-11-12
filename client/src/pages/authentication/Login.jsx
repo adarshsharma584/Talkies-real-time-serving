@@ -60,7 +60,7 @@ function Login() {
       <div className="flex-1 flex flex-col justify-center px-4 py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
-            Welcome to GupShup
+            Welcome to Chat-Bird
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
             Sign in to continue chatting with your friends
@@ -134,7 +134,7 @@ function Login() {
                 </div>
                 <div className="relative flex justify-center text-sm">
                   <span className="px-2 bg-white dark:bg-gray-800 text-gray-500">
-                    New to GupShup?
+                    New to Chat-Bird?
                   </span>
                 </div>
               </div>

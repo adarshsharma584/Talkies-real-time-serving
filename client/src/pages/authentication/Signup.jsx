@@ -97,7 +97,7 @@ function Signup() {
             Create your account
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
-            Join GupShup and start chatting with your friends
+            Join Chat-Bird and start chatting with your friends
           </p>
         </div>
 

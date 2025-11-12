@@ -177,7 +177,7 @@ function MessageContainer() {
         <div className="flex items-center justify-center h-full">
           <div className="text-center">
             <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">
-              Welcome to GupShup
+              Welcome to Chat-Bird
             </h3>
             <p className="text-gray-500 dark:text-gray-400 mt-2">
               Select a user from the sidebar to start chatting

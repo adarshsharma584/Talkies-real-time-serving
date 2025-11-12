@@ -1,4 +1,4 @@
-# GupShup — Chat App
+# Chat-Bird — Chat App
 
 A modern real-time chat application built with React (Vite) on the client, Express + MongoDB on the server, Redux Toolkit for state management, and Socket.IO for live messaging.
 
