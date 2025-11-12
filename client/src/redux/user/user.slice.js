@@ -88,12 +88,15 @@ const userSlice = createSlice({
       .addCase(getUserProfileThunk.fulfilled, (state, action) => {
         console.log("Get User Profile fulfilled");
         state.screenLoading = false;
+        state.isAuthenticated = true; // Ensure authenticated state is also set here
         state.userProfile = action.payload?.data?.user;
         console.log("User profile:", state.userProfile);
       })
       .addCase(getUserProfileThunk.rejected, (state, action) => {
         console.log("Get User Profile rejected");
         state.screenLoading = false;
+        state.isAuthenticated = false; // On failure, ensure user is not authenticated
+        state.userProfile = null;
         console.error("Error during getting user profile:", action.payload);
       });
 
